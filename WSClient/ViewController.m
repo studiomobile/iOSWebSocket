@@ -5,7 +5,7 @@
 #import "ViewController.h"
 #import "WebSocket.h"
 
-#define SERVER_URL @"wss://echo.websocket.org"
+#define SERVER_URL @"ws://localhost:9000"
 
 @interface ViewController () <WebSocketDelegate>
 @end
