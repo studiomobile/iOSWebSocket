@@ -1,0 +1,459 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		B416A0E614E98C8B00372771 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B416A0E514E98C8B00372771 /* UIKit.framework */; };
+		B416A0E714E98C8B00372771 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AACBBE490F95108600F1A2B1 /* Foundation.framework */; };
+		B416A0E914E98C8B00372771 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B416A0E814E98C8B00372771 /* CoreGraphics.framework */; };
+		B416A0EF14E98C8B00372771 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = B416A0ED14E98C8B00372771 /* InfoPlist.strings */; };
+		B416A0F114E98C8B00372771 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = B416A0F014E98C8B00372771 /* main.m */; };
+		B416A0F514E98C8B00372771 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = B416A0F414E98C8B00372771 /* AppDelegate.m */; };
+		B416A0F814E98C8B00372771 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B416A0F714E98C8B00372771 /* ViewController.m */; };
+		B416A0FB14E98C8B00372771 /* ViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B416A0F914E98C8B00372771 /* ViewController.xib */; };
+		B416A10414E98F3B00372771 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B416A10314E98F3B00372771 /* Security.framework */; };
+		B416A10614E98F5000372771 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B416A10514E98F5000372771 /* CFNetwork.framework */; };
+		B4F7139D14EC25280009A8D2 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AACBBE490F95108600F1A2B1 /* Foundation.framework */; };
+		B4F713A314EC25280009A8D2 /* WebSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = B4F713A214EC25280009A8D2 /* WebSocket.m */; };
+		B4F713AF14EC256B0009A8D2 /* NSData+Base64.h in Headers */ = {isa = PBXBuildFile; fileRef = B4F713A714EC256B0009A8D2 /* NSData+Base64.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		B4F713B014EC256B0009A8D2 /* NSData+Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = B4F713A814EC256B0009A8D2 /* NSData+Base64.m */; };
+		B4F713B214EC256B0009A8D2 /* WebSocketHandshake.m in Sources */ = {isa = PBXBuildFile; fileRef = B4F713AA14EC256B0009A8D2 /* WebSocketHandshake.m */; };
+		B4F713B414EC256B0009A8D2 /* WebSocketProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = B4F713AC14EC256B0009A8D2 /* WebSocketProtocol.m */; };
+		B4F713B614EC256B0009A8D2 /* WebSocketTransport.m in Sources */ = {isa = PBXBuildFile; fileRef = B4F713AE14EC256B0009A8D2 /* WebSocketTransport.m */; };
+		B4F713B714EC25D50009A8D2 /* libWebSocket.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B4F7139C14EC25280009A8D2 /* libWebSocket.a */; };
+		B4F713B814EC25FA0009A8D2 /* WebSocket.h in Headers */ = {isa = PBXBuildFile; fileRef = B4F713A114EC25280009A8D2 /* WebSocket.h */; settings = {ATTRIBUTES = (Public, ); }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		B4F713B914EC26190009A8D2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B4F7139B14EC25280009A8D2;
+			remoteInfo = WebSocket;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		AACBBE490F95108600F1A2B1 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		B416A0E314E98C8A00372771 /* WSClient.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WSClient.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B416A0E514E98C8B00372771 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		B416A0E814E98C8B00372771 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		B416A0EC14E98C8B00372771 /* WSClient-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "WSClient-Info.plist"; sourceTree = "<group>"; };
+		B416A0EE14E98C8B00372771 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		B416A0F014E98C8B00372771 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		B416A0F214E98C8B00372771 /* WSClient-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "WSClient-Prefix.pch"; sourceTree = "<group>"; };
+		B416A0F314E98C8B00372771 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		B416A0F414E98C8B00372771 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		B416A0F614E98C8B00372771 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
+		B416A0F714E98C8B00372771 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		B416A0FA14E98C8B00372771 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/ViewController.xib; sourceTree = "<group>"; };
+		B416A10314E98F3B00372771 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		B416A10514E98F5000372771 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
+		B4F7139C14EC25280009A8D2 /* libWebSocket.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libWebSocket.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		B4F713A114EC25280009A8D2 /* WebSocket.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WebSocket.h; sourceTree = "<group>"; };
+		B4F713A214EC25280009A8D2 /* WebSocket.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WebSocket.m; sourceTree = "<group>"; };
+		B4F713A714EC256B0009A8D2 /* NSData+Base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+Base64.h"; sourceTree = "<group>"; };
+		B4F713A814EC256B0009A8D2 /* NSData+Base64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+Base64.m"; sourceTree = "<group>"; };
+		B4F713A914EC256B0009A8D2 /* WebSocketHandshake.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebSocketHandshake.h; sourceTree = "<group>"; };
+		B4F713AA14EC256B0009A8D2 /* WebSocketHandshake.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WebSocketHandshake.m; sourceTree = "<group>"; };
+		B4F713AB14EC256B0009A8D2 /* WebSocketProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebSocketProtocol.h; sourceTree = "<group>"; };
+		B4F713AC14EC256B0009A8D2 /* WebSocketProtocol.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WebSocketProtocol.m; sourceTree = "<group>"; };
+		B4F713AD14EC256B0009A8D2 /* WebSocketTransport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebSocketTransport.h; sourceTree = "<group>"; };
+		B4F713AE14EC256B0009A8D2 /* WebSocketTransport.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WebSocketTransport.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		B416A0E014E98C8A00372771 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B4F713B714EC25D50009A8D2 /* libWebSocket.a in Frameworks */,
+				B416A10614E98F5000372771 /* CFNetwork.framework in Frameworks */,
+				B416A10414E98F3B00372771 /* Security.framework in Frameworks */,
+				B416A0E614E98C8B00372771 /* UIKit.framework in Frameworks */,
+				B416A0E714E98C8B00372771 /* Foundation.framework in Frameworks */,
+				B416A0E914E98C8B00372771 /* CoreGraphics.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B4F7139914EC25280009A8D2 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B4F7139D14EC25280009A8D2 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		034768DFFF38A50411DB9C8B /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				B416A0E314E98C8A00372771 /* WSClient.app */,
+				B4F7139C14EC25280009A8D2 /* libWebSocket.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		0867D691FE84028FC02AAC07 /* iphone_web */ = {
+			isa = PBXGroup;
+			children = (
+				B4F7139E14EC25280009A8D2 /* WebSocket */,
+				B416A0EA14E98C8B00372771 /* WSClient */,
+				0867D69AFE84028FC02AAC07 /* Frameworks */,
+				034768DFFF38A50411DB9C8B /* Products */,
+			);
+			name = iphone_web;
+			sourceTree = "<group>";
+		};
+		0867D69AFE84028FC02AAC07 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				B416A10514E98F5000372771 /* CFNetwork.framework */,
+				B416A10314E98F3B00372771 /* Security.framework */,
+				AACBBE490F95108600F1A2B1 /* Foundation.framework */,
+				B416A0E514E98C8B00372771 /* UIKit.framework */,
+				B416A0E814E98C8B00372771 /* CoreGraphics.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		B416A0EA14E98C8B00372771 /* WSClient */ = {
+			isa = PBXGroup;
+			children = (
+				B416A0F314E98C8B00372771 /* AppDelegate.h */,
+				B416A0F414E98C8B00372771 /* AppDelegate.m */,
+				B416A0F614E98C8B00372771 /* ViewController.h */,
+				B416A0F714E98C8B00372771 /* ViewController.m */,
+				B416A0F914E98C8B00372771 /* ViewController.xib */,
+				B416A0EB14E98C8B00372771 /* Supporting Files */,
+			);
+			path = WSClient;
+			sourceTree = "<group>";
+		};
+		B416A0EB14E98C8B00372771 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				B416A0EC14E98C8B00372771 /* WSClient-Info.plist */,
+				B416A0ED14E98C8B00372771 /* InfoPlist.strings */,
+				B416A0F014E98C8B00372771 /* main.m */,
+				B416A0F214E98C8B00372771 /* WSClient-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		B4F7139E14EC25280009A8D2 /* WebSocket */ = {
+			isa = PBXGroup;
+			children = (
+				B4F713A114EC25280009A8D2 /* WebSocket.h */,
+				B4F713A214EC25280009A8D2 /* WebSocket.m */,
+				B4F713A914EC256B0009A8D2 /* WebSocketHandshake.h */,
+				B4F713AA14EC256B0009A8D2 /* WebSocketHandshake.m */,
+				B4F713AB14EC256B0009A8D2 /* WebSocketProtocol.h */,
+				B4F713AC14EC256B0009A8D2 /* WebSocketProtocol.m */,
+				B4F713AD14EC256B0009A8D2 /* WebSocketTransport.h */,
+				B4F713AE14EC256B0009A8D2 /* WebSocketTransport.m */,
+				B4F713A714EC256B0009A8D2 /* NSData+Base64.h */,
+				B4F713A814EC256B0009A8D2 /* NSData+Base64.m */,
+			);
+			path = WebSocket;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		B4F7139A14EC25280009A8D2 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B4F713B814EC25FA0009A8D2 /* WebSocket.h in Headers */,
+				B4F713AF14EC256B0009A8D2 /* NSData+Base64.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		B416A0E214E98C8A00372771 /* WSClient */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B416A0FE14E98C8B00372771 /* Build configuration list for PBXNativeTarget "WSClient" */;
+			buildPhases = (
+				B416A0DF14E98C8A00372771 /* Sources */,
+				B416A0E014E98C8A00372771 /* Frameworks */,
+				B416A0E114E98C8A00372771 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				B4F713BA14EC26190009A8D2 /* PBXTargetDependency */,
+			);
+			name = WSClient;
+			productName = WSClient;
+			productReference = B416A0E314E98C8A00372771 /* WSClient.app */;
+			productType = "com.apple.product-type.application";
+		};
+		B4F7139B14EC25280009A8D2 /* WebSocket */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B4F713A414EC25280009A8D2 /* Build configuration list for PBXNativeTarget "WebSocket" */;
+			buildPhases = (
+				B4F7139814EC25280009A8D2 /* Sources */,
+				B4F7139914EC25280009A8D2 /* Frameworks */,
+				B4F7139A14EC25280009A8D2 /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = WebSocket;
+			productName = WebSocket;
+			productReference = B4F7139C14EC25280009A8D2 /* libWebSocket.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		0867D690FE84028FC02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0420;
+			};
+			buildConfigurationList = 1DEB922208733DC00010E9CD /* Build configuration list for PBXProject "iOSWebSocket" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 1;
+			knownRegions = (
+				English,
+				Japanese,
+				French,
+				German,
+				en,
+			);
+			mainGroup = 0867D691FE84028FC02AAC07 /* iphone_web */;
+			productRefGroup = 034768DFFF38A50411DB9C8B /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				B4F7139B14EC25280009A8D2 /* WebSocket */,
+				B416A0E214E98C8A00372771 /* WSClient */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		B416A0E114E98C8A00372771 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B416A0EF14E98C8B00372771 /* InfoPlist.strings in Resources */,
+				B416A0FB14E98C8B00372771 /* ViewController.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		B416A0DF14E98C8A00372771 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B416A0F114E98C8B00372771 /* main.m in Sources */,
+				B416A0F514E98C8B00372771 /* AppDelegate.m in Sources */,
+				B416A0F814E98C8B00372771 /* ViewController.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B4F7139814EC25280009A8D2 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B4F713A314EC25280009A8D2 /* WebSocket.m in Sources */,
+				B4F713B214EC256B0009A8D2 /* WebSocketHandshake.m in Sources */,
+				B4F713B414EC256B0009A8D2 /* WebSocketProtocol.m in Sources */,
+				B4F713B614EC256B0009A8D2 /* WebSocketTransport.m in Sources */,
+				B4F713B014EC256B0009A8D2 /* NSData+Base64.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		B4F713BA14EC26190009A8D2 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B4F7139B14EC25280009A8D2 /* WebSocket */;
+			targetProxy = B4F713B914EC26190009A8D2 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		B416A0ED14E98C8B00372771 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				B416A0EE14E98C8B00372771 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		B416A0F914E98C8B00372771 /* ViewController.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				B416A0FA14E98C8B00372771 /* en */,
+			);
+			name = ViewController.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		1DEB922308733DC00010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				OTHER_LDFLAGS = "-ObjC";
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		1DEB922408733DC00010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				OTHER_LDFLAGS = "-ObjC";
+				SDKROOT = iphoneos;
+			};
+			name = Release;
+		};
+		B416A0FC14E98C8B00372771 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "WSClient/WSClient-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				INFOPLIST_FILE = "WSClient/WSClient-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		B416A0FD14E98C8B00372771 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "WSClient/WSClient-Prefix.pch";
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				INFOPLIST_FILE = "WSClient/WSClient-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				VALIDATE_PRODUCT = YES;
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+		B4F713A514EC25280009A8D2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = NO;
+				DSTROOT = /tmp/WebSocket.dst;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		B4F713A614EC25280009A8D2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = YES;
+				DSTROOT = /tmp/WebSocket.dst;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1DEB922208733DC00010E9CD /* Build configuration list for PBXProject "iOSWebSocket" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB922308733DC00010E9CD /* Debug */,
+				1DEB922408733DC00010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B416A0FE14E98C8B00372771 /* Build configuration list for PBXNativeTarget "WSClient" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B416A0FC14E98C8B00372771 /* Debug */,
+				B416A0FD14E98C8B00372771 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B4F713A414EC25280009A8D2 /* Build configuration list for PBXNativeTarget "WebSocket" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B4F713A514EC25280009A8D2 /* Debug */,
+				B4F713A614EC25280009A8D2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 0867D690FE84028FC02AAC07 /* Project object */;
+}

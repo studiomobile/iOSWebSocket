@@ -1,0 +1,7 @@
+# xcode noise
+DerivedData
+xcuserdata
+project.xcworkspace
+
+# osx noise
+.DS_Store
