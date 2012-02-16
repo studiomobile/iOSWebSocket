@@ -31,8 +31,24 @@ server.on('connection', function(socket) {
           res.destroy();
         });
       });
+    } else if (msg.match(/ping/)) {
+      socket.send('Ping from server');
+      socket.ping(new Date().toISOString());
     } else {
       socket.send(msg);
+    }
+  });
+
+  socket.on('pong', function(data) {
+    var now = new Date()
+      , num = Date.parse(data)
+      , date = num && new Date(num);
+    if (date) {
+      var diff = now.getTime() - date.getTime();
+      console.log('Ping/pong (in millis): ' + diff);
+      socket.send('Ping/pong on server (in millis): ' + diff);
+    } else {
+      console.log('Bad Pong: ' + data);
     }
   });
 
