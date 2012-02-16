@@ -3,7 +3,7 @@ var util = require('util')
   , http = require('http')
   , WebSocketServer = require('ws').Server
   , server = new WebSocketServer({port: 9000})
-  , urlRegex = /(http:\/\/)?([\da-z-]+\.)+([a-z]{2,6})/i
+  , urlRegex = /http:\/\/([\da-z-]+\.)+([a-z]{2,6})/i
 
 console.log("Starting server or port 9000")
 
