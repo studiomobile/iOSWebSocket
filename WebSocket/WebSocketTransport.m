@@ -200,7 +200,7 @@
 {
     switch (eventCode) {
         case NSStreamEventOpenCompleted:
-            if (TRUE) {
+            if (stream == inputStream || stream == outputStream) {
                 HANDLE([self _updateState:WebSocketTransportOpen]);
             }
             break;
@@ -216,7 +216,7 @@
             break;
         case NSStreamEventErrorOccurred:
         case NSStreamEventEndEncountered:
-            if (TRUE) {
+            if (stream == inputStream || stream == outputStream) {
                 HANDLE([self _closeWithError:stream.streamError]);
             }
             break;

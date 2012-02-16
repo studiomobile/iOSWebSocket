@@ -48,8 +48,6 @@
     [super viewDidLoad];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
-    socket = [[WebSocket alloc] initWithRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:SERVER_URL]] origin:nil dispatchQueue:nil];
-    socket.delegate = self;
     [self updateView];
 }
 
@@ -57,8 +55,12 @@
 
 - (void)switchState
 {
+    if (!socket) {
+        socket = [[WebSocket alloc] initWithRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:SERVER_URL]] delegate:self];
+    }
     if (socket.state == WebSocketOpen) {
         [socket close];
+        socket = nil;
     } else
     if (socket.state == WebSocketClosed) {
         [socket open];

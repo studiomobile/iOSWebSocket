@@ -9,82 +9,146 @@
 
 NSString *kWebSocketErrorDomain = @"WebSocketErrorDomain";
 
-@interface WebSocket () <WebSocketTransportDelegate, WebSocketHandshakeDelegate>
+typedef void(^WSSocketNotifierCallback)(WebSocket *socket, id<WebSocketDelegate> delegate);
+typedef void(^WSSocketNotifier)(WSSocketNotifierCallback callback);
+
+@interface WebSocketStateHolder : NSObject
+@property (nonatomic, readonly) WebSocketState state;
+@property (nonatomic, copy) WSSocketNotifier notifier;
+@property (nonatomic, copy) WSProtocolData sender;
+@property (nonatomic, copy) WSProtocolData receiver;
+@property (nonatomic, copy) WSProtocolError errorHandler;
+@property (nonatomic, copy) WSProtocolFrame frameReceiver;
 @property (nonatomic, strong) WebSocketFrame *partial;
-@property (nonatomic, strong) NSMutableData *cache;
-- (void)_handleFrame:(WebSocketFrame*)frame;
-- (void)_closeWithError:(NSError*)error;
+@property (nonatomic, strong, readonly) NSMutableData *cache;
+- (void)update:(WebSocketState)state;
+@end
+
+@interface WebSocket () <WebSocketTransportDelegate, WebSocketHandshakeDelegate>
 @end
 
 #define CALL(call) dispatch_async(work, ^{ call; })
-#define NOTIFY(call) dispatch_async(dispatch, ^{ call; })
 
 @implementation WebSocket {
+    WebSocketStateHolder *state;
     WebSocketTransport *transport;
     WSProtocolData sender;
     WSProtocolData receiver;
+    WSProtocolError errorHandler;
     dispatch_queue_t work;
     dispatch_queue_t dispatch;
 }
-@synthesize delegate;
 @synthesize request;
 @synthesize origin;
-@synthesize state;
 @synthesize version;
 @synthesize secure;
-@synthesize partial;
-@synthesize cache;
 
 + (NSArray*)supportedSchemes { return [NSArray arrayWithObjects:@"ws", @"wss", @"http", @"https", nil]; }
 + (NSArray*)secureSchemes { return [NSArray arrayWithObjects:@"wss", @"https", nil]; }
 
-- (id)initWithRequest:(NSURLRequest*)_request origin:(NSURL*)_origin dispatchQueue:(dispatch_queue_t)_dispatch
+- (id)initWithRequest:(NSURLRequest*)_request origin:(NSURL*)_origin delegate:(id<WebSocketDelegate>)__delegate dispatchQueue:(dispatch_queue_t)_dispatch
 {
     NSURL *url = _request.URL;
     if (![self.class.supportedSchemes containsObject:url.scheme]) return nil;
     if (self = [super init]) {
         request = _request;
         origin = _origin;
-        state = WebSocketClosed;
         version = 13;
         secure = [self.class.secureSchemes containsObject:url.scheme];
-        work = dispatch_queue_create("WebSocket Work Queue", DISPATCH_QUEUE_SERIAL);
-        dispatch = _dispatch ? _dispatch : dispatch_get_current_queue();
-        dispatch_retain(dispatch);
-        cache = [NSMutableData new];
         NSUInteger port = url.port ? [url.port unsignedIntegerValue] : secure ? 443 : 80;
-        transport = [[WebSocketTransport alloc] initWithHost:url.host port:port secure:secure dispatchQueue:work];
+
+        work = dispatch_queue_create("WebSocket Work Queue", DISPATCH_QUEUE_SERIAL);
+        if (!_dispatch) _dispatch = dispatch_get_main_queue();
+        dispatch = _dispatch;
+        dispatch_retain(dispatch);
+
+        WebSocketStateHolder *_state = state = [WebSocketStateHolder new];
+        WebSocketTransport *_transport = transport = [[WebSocketTransport alloc] initWithHost:url.host port:port secure:secure dispatchQueue:work];
         transport.delegate = self;
-        sender = transport.sender;
-        __block __typeof__(self) me = self;
-        receiver = ^(NSData *data) {
-            me.partial = WebSocketReceive(data, me.partial, me.cache, ^(WebSocketFrame *frame) {
-                [me _handleFrame:frame];
-            }, ^(NSError *error) {
-                [me _closeWithError:error];
+
+        __unsafe_unretained WebSocket *me = self;
+        __unsafe_unretained id<WebSocketDelegate> _delegate = __delegate;
+        WSSocketNotifier _notify = state.notifier = ^(WSSocketNotifierCallback callback) {
+            dispatch_async(_dispatch, ^{
+                callback(me, _delegate);
             });
+        };
+
+        WSProtocolData _sender = sender = state.sender = transport.sender;
+        WSProtocolError _errorHandler = errorHandler = state.errorHandler = ^(NSError *error) {
+            if (error) {
+                _notify(^(WebSocket *socket, id<WebSocketDelegate> delegate) {
+                    [delegate webSocket:socket didFailedWithError:error];
+                });
+            }
+            [_transport close];
+        };
+
+        WSProtocolFrame _frameReceiver = state.frameReceiver = ^(WebSocketFrame *frame) {
+            switch (frame.opCode) {
+                case WebSocketTextFrame: {
+                    _notify(^(WebSocket *socket, id<WebSocketDelegate> delegate) {
+                        [delegate webSocket:socket didReceiveStringData:frame.data];
+                    });
+                }   break;
+                case WebSocketBinaryFrame: {
+                    _notify(^(WebSocket *socket, id<WebSocketDelegate> delegate) {
+                        [delegate webSocket:me didReceiveData:frame.data];
+                    });
+                }   break;
+                case WebSocketPong: {
+                    NSData *data = frame.data;
+                    CFAbsoluteTime time = CFAbsoluteTimeGetCurrent();
+                    if (data.length != sizeof(time)) return;
+                    CFAbsoluteTime was = *(CFAbsoluteTime*)data.bytes;
+                    _notify(^(WebSocket *socket, id<WebSocketDelegate> delegate) {
+                        [_delegate webSocket:me didReceivePongAfterDelay:time - was];
+                    });
+                }   break;
+                case WebSocketPing:
+                    WebSocketSend(frame.data, WebSocketPong, YES, _sender);
+                    break;
+                case WebSocketConnectionClose:
+                    //TODO: check close code
+                    _errorHandler(nil);
+                    break;
+                default:
+                    break;
+            }
+        };
+
+        receiver = state.receiver = ^(NSData *data) {
+            _state.partial = WebSocketReceive(data, _state.partial, _state.cache, _frameReceiver, _errorHandler);
         };
     }
     return self;
 }
 
-- (id)initWithRequest:(NSURLRequest*)_request
+- (id)initWithRequest:(NSURLRequest*)_request delegate:(id<WebSocketDelegate>)_delegate
 {
-    return [self initWithRequest:_request origin:nil dispatchQueue:nil];
+    return [self initWithRequest:_request origin:nil delegate:_delegate dispatchQueue:nil];
 }
 
-- (id)initWithRequest:(NSURLRequest*)_request origin:(NSURL*)_origin
+- (id)initWithRequest:(NSURLRequest*)_request origin:(NSURL*)_origin delegate:(id<WebSocketDelegate>)_delegate
 {
-    return [self initWithRequest:_request origin:_origin dispatchQueue:nil];
+    return [self initWithRequest:_request origin:_origin delegate:_delegate dispatchQueue:nil];
 }
 
 - (void)dealloc
 {
+    state.notifier = ^(WSSocketNotifierCallback _) {};
+    [transport close];
+    dispatch_sync(work, ^{}); // wait for completion
     dispatch_release(work);
     dispatch_release(dispatch);
 }
 
 #pragma mark API
+
+- (WebSocketState)state
+{
+    return state.state;
+}
 
 - (void)open
 {
@@ -98,7 +162,18 @@ NSString *kWebSocketErrorDomain = @"WebSocketErrorDomain";
 
 - (void)close
 {
-    [transport close];
+    [self closeWithMessage:nil code:WebSocketCloseNormal];
+}
+
+- (void)closeWithMessage:(NSString*)message code:(WebSocketCloseCode)_code
+{
+    uint16_t code = OSSwapHostToBigInt16(_code);
+    NSMutableData *data = [NSMutableData dataWithBytes:&code length:sizeof(code)];
+    if (message.length) {
+        [data appendData:[message dataUsingEncoding:NSUTF8StringEncoding]];
+    }
+    CALL(WebSocketSend(data, WebSocketConnectionClose, YES, sender));
+    CALL([state update:WebSocketClosing]);
 }
 
 - (void)sendString:(NSString*)string
@@ -112,16 +187,6 @@ NSString *kWebSocketErrorDomain = @"WebSocketErrorDomain";
     CALL(WebSocketSend(data, WebSocketBinaryFrame, YES, sender));
 }
 
-- (void)sendClose:(NSString*)message code:(uint16_t)code
-{
-    code = htons(code);
-    NSMutableData *data = [NSMutableData dataWithBytes:&code length:sizeof(code)];
-    if (message.length) {
-        [data appendData:[message dataUsingEncoding:NSUTF8StringEncoding]];
-    }
-    WebSocketSend(data, WebSocketConnectionClose, YES, sender);
-}
-
 - (void)ping
 {
     CFAbsoluteTime time = CFAbsoluteTimeGetCurrent();
@@ -129,69 +194,12 @@ NSString *kWebSocketErrorDomain = @"WebSocketErrorDomain";
     CALL(WebSocketSend(data, WebSocketPing, YES, sender));
 }
 
-#pragma mark Internals
-
-- (void)_updateState:(WebSocketState)_state
-{
-    if (state == _state) return;
-    state = _state;
-    if (state == WebSocketClosed) {
-        partial = nil;
-        [cache setLength:0];
-    }
-    NOTIFY([delegate webSocket:self didChangeState:state]);
-}
-
-- (void)_closeWithError:(NSError*)error
-{
-    if (error) {
-        NOTIFY([delegate webSocket:self didFailedWithError:error]);
-    }
-    transport.receiver = nil;
-    [transport close];
-}
-
-- (void)_handleFrame:(WebSocketFrame*)frame
-{
-    switch (frame.opCode) {
-        case WebSocketTextFrame: {
-            NOTIFY([delegate webSocket:self didReceiveStringData:frame.data]);
-        }   break;
-        case WebSocketBinaryFrame: {
-            NOTIFY([delegate webSocket:self didReceiveData:frame.data]);
-        }   break;
-        case WebSocketPong: {
-            NSData *data = frame.data;
-            CFAbsoluteTime time = CFAbsoluteTimeGetCurrent();
-            if (data.length != sizeof(time)) return;
-            CFAbsoluteTime was = *(CFAbsoluteTime*)data.bytes;
-            NOTIFY([delegate webSocket:self didReceivePongAfterDelay:time - was]);
-        }   break;
-        case WebSocketConnectionClose:
-            //TODO: check close code
-            [self _closeWithError:nil];
-            break;
-        default:
-            break;
-    }
-}
-
-- (void)_startHandshake
-{
-    WebSocketHandshake * handshake = [[WebSocketHandshake alloc] initWithRequest:request origin:origin version:version];
-    handshake.delegate = self;
-    transport.receiver = ^(NSData *data) {
-        [handshake acceptData:data];
-    };
-    sender(handshake.handshakeData);
-}
-
 #pragma mark WebSocketHandshakeDelegate
 
 - (void)webSocketHandshake:(WebSocketHandshake*)_handshake didFinishedWithDataLeft:(NSData*)data
 {
     transport.receiver = receiver;
-    [self _updateState:WebSocketOpen];
+    [state update:WebSocketOpen];
     if (data) {
         receiver(data);
     }
@@ -199,7 +207,7 @@ NSString *kWebSocketErrorDomain = @"WebSocketErrorDomain";
 
 - (void)webSocketHandshake:(WebSocketHandshake*)handshake didFailedWithError:(NSError*)error
 {
-    [self _closeWithError:error];
+    errorHandler(error);
 }
 
 #pragma mark WebSocketTransportDelegate
@@ -208,20 +216,60 @@ NSString *kWebSocketErrorDomain = @"WebSocketErrorDomain";
 {
     switch (_state) {
         case WebSocketTransportConnecting:
-            [self _updateState:WebSocketConnecting];
+            [state update:WebSocketConnecting];
             break;
-        case WebSocketTransportOpen:
-            [self _startHandshake];
-            break;
+        case WebSocketTransportOpen: {
+            WebSocketHandshake * handshake = [[WebSocketHandshake alloc] initWithRequest:request origin:origin version:version];
+            handshake.delegate = self;
+            transport.receiver = ^(NSData *data) {
+                [handshake acceptData:data];
+            };
+            sender(handshake.handshakeData);
+        }   break;
         case WebSocketTransportClosed:
-            [self _updateState:WebSocketClosed];
+            transport.receiver = nil;
+            [state update:WebSocketClosed];
             break;
     }
 }
 
 - (void)webSocketTransport:(WebSocketTransport*)transport didFailedWithError:(NSError*)error
 {
-    [self _closeWithError:error];
+    errorHandler(error);
+}
+
+@end
+
+@implementation WebSocketStateHolder
+@synthesize state;
+@synthesize notifier;
+@synthesize sender;
+@synthesize receiver;
+@synthesize errorHandler;
+@synthesize frameReceiver;
+@synthesize cache;
+@synthesize partial;
+
+- (id)init
+{
+    if (self = [super init]) {
+        state = WebSocketClosed;
+        cache = [NSMutableData new];
+    }
+    return self;
+}
+
+- (void)update:(WebSocketState)_state
+{
+    if (state == _state) return;
+    state = _state;
+    if (state == WebSocketClosed) {
+        partial = nil;
+        [cache setLength:0];
+    }
+    notifier(^(WebSocket *socket, id<WebSocketDelegate> delegate) {
+        [delegate webSocket:socket didChangeState:_state];
+    });
 }
 
 @end
