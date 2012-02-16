@@ -7,45 +7,31 @@
 #import <CommonCrypto/CommonDigest.h>
 #import "NSData+Base64.h"
 
-#define WS_GUID @"258EAFA5-E914-47DA-95CA-C5AB0DC85B11"
+#define SEC_KEY_SIZE 16
+#define WEB_SOCKET_GUID @"258EAFA5-E914-47DA-95CA-C5AB0DC85B11"
 
-static NSString *GenAccept(NSString *secKey);
-static NSString *GenSecKey(NSUInteger length);
-
-@implementation WebSocketHandshake {
-    NSString *secKey;
-    NSString *accept;
-    CFHTTPMessageRef _resp;
-}
-@synthesize delegate;
-@synthesize request;
-@synthesize origin;
-@synthesize version;
-
-- (id)initWithRequest:(NSURLRequest*)req origin:(NSURL*)_origin version:(NSUInteger)_version
+NSString* WebSocketHandshakeSecKey(void)
 {
-    if (self = [super init]) {
-        request = req;
-        origin = _origin;
-        version = _version;
-        secKey = GenSecKey(16);
-        accept = GenAccept(secKey);
-    }
-    return self;
+    NSMutableData *key = [[NSMutableData alloc] initWithLength:SEC_KEY_SIZE];
+    SecRandomCopyBytes(kSecRandomDefault, key.length, key.mutableBytes);
+    return [key base64EncodedString];
 }
 
-- (void)dealloc
+NSString* WebSocketHandshakeAccept(NSString *secKey)
 {
-    if (_resp) CFRelease(_resp);
+    const char *bytes = [[secKey stringByAppendingString:WEB_SOCKET_GUID] cStringUsingEncoding:NSASCIIStringEncoding];
+    uint8_t digest[CC_SHA1_DIGEST_LENGTH];
+    CC_SHA1(bytes, strlen(bytes), digest);
+    return [[NSData dataWithBytesNoCopy:digest length:sizeof(digest) freeWhenDone:NO] base64EncodedString];
 }
 
-- (NSData*)handshakeData
+NSData* WebSocketHandshakeData(NSURLRequest *req, NSURL *origin, NSString *secKey, NSUInteger version)
 {
-    NSURL *url = request.URL;
+    NSURL *url = req.URL;
     CFHTTPMessageRef handshake = CFHTTPMessageCreateRequest(NULL, CFSTR("GET"), (__bridge CFURLRef)url, kCFHTTPVersion1_1);
     // Set host first so it defaults
     CFHTTPMessageSetHeaderFieldValue(handshake, CFSTR("Host"), (__bridge CFStringRef)(url.port ? [NSString stringWithFormat:@"%@:%@", url.host, url.port] : url.host));
-    [request.allHTTPHeaderFields enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+    [req.allHTTPHeaderFields enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
         CFHTTPMessageSetHeaderFieldValue(handshake, (__bridge CFStringRef)key, (__bridge CFStringRef)obj);
     }];
     CFHTTPMessageSetHeaderFieldValue(handshake, CFSTR("Upgrade"), CFSTR("websocket"));
@@ -60,58 +46,31 @@ static NSString *GenSecKey(NSUInteger length);
     return handshakeData;
 }
 
-- (BOOL)handleResponse:(CFHTTPMessageRef)resp error:(NSError**)error
+id WebSocketHandshakeAcceptData(NSData *data, id state, NSString *accept, WSHandshakeError handler, WSHandshakeData completion)
 {
+    CFHTTPMessageRef resp = (__bridge CFHTTPMessageRef)state;
+    if (!resp) {
+        resp = CFHTTPMessageCreateEmpty(NULL, NO);
+        state = (__bridge id)resp;
+    }
+    if (!CFHTTPMessageAppendBytes(resp, data.bytes, data.length)) {
+        return state;
+    }
+    if (!CFHTTPMessageIsHeaderComplete(resp)) {
+        return state;
+    }
     NSInteger responseCode = CFHTTPMessageGetResponseStatusCode(resp);
     if (responseCode != 101) {
-        if (*error) *error = WebSocketError(kWebSocketErrorHandshake, CFBridgingRelease(CFHTTPMessageCopyResponseStatusLine(resp)), nil);
-        return NO;
+        handler(WebSocketError(kWebSocketErrorHandshake, CFBridgingRelease(CFHTTPMessageCopyResponseStatusLine(resp)), nil));
+        return nil;
     }
     NSDictionary *headers = CFBridgingRelease(CFHTTPMessageCopyAllHeaderFields(resp));
     BOOL accepted = [accept isEqualToString:[headers objectForKey:@"Sec-WebSocket-Accept"]];
     if (!accepted) {
-        if (*error) *error = WebSocketError(kWebSocketErrorHandshake, @"Bad Sec-WebSocket-Accept header", nil);
-        return NO;
+        handler(WebSocketError(kWebSocketErrorHandshake, @"Bad Sec-WebSocket-Accept header", nil));
+        return nil;
     }
-    return YES;
-}
-
-- (void)acceptData:(NSData*)data
-{
-    if (!_resp) {
-        _resp = CFHTTPMessageCreateEmpty(NULL, NO);
-    }
-    if (!CFHTTPMessageAppendBytes(_resp, data.bytes, data.length)) {
-        return;
-    }
-    if (!CFHTTPMessageIsHeaderComplete(_resp)) {
-        return;
-    }
-    NSError *error = nil;
-    BOOL ok = [self handleResponse:_resp error:&error];
-    CFRelease(_resp);
-    _resp = nil;
-    if (ok) {
-        //TODO: check data left
-        [delegate webSocketHandshake:self didFinishedWithDataLeft:nil];
-    } else {
-        [delegate webSocketHandshake:self didFailedWithError:error];
-    }
-}
-
-@end
-
-static NSString *GenAccept(NSString *secKey)
-{
-    const char *bytes = [[secKey stringByAppendingString:WS_GUID] cStringUsingEncoding:NSASCIIStringEncoding];
-    uint8_t digest[CC_SHA1_DIGEST_LENGTH];
-    CC_SHA1(bytes, strlen(bytes), digest);
-    return [[NSData dataWithBytesNoCopy:digest length:sizeof(digest) freeWhenDone:NO] base64EncodedString];
-}
-
-static NSString *GenSecKey(NSUInteger length)
-{
-    NSMutableData *key = [[NSMutableData alloc] initWithLength:length];
-    SecRandomCopyBytes(kSecRandomDefault, key.length, key.mutableBytes);
-    return [key base64EncodedString];
+    //TODO: check data left
+    completion(nil);
+    return nil;
 }

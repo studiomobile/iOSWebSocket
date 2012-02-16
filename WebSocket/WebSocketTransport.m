@@ -34,12 +34,13 @@
     dispatch_queue_t work;
 #endif
 }
-@synthesize delegate;
 @synthesize host;
 @synthesize port;
 @synthesize secure;
 @synthesize state = _state;
+@synthesize stateListener;
 @synthesize receiver;
+@synthesize errorHandler;
 
 - (id)initWithHost:(NSString*)_host port:(NSUInteger)_port secure:(BOOL)_secure dispatchQueue:(dispatch_queue_t)_dispatch
 {
@@ -86,11 +87,9 @@
     CALL([self _closeWithError:nil]);
 }
 
-- (WSTransportData)sender
+- (void)send:(NSData*)data
 {
-    return ^(NSData *data) {
-        CALL([self _writeData:[data copy]]);
-    };
+    CALL([self _writeData:[data copy]]);
 }
 
 #pragma mark Internals
@@ -99,7 +98,7 @@
 {
     if (_state == state) return;
     _state = state;
-    NOTIFY([self.delegate webSocketTransport:self didChangeState:_state]);
+    NOTIFY(stateListener(self));
 }
 
 - (void)_openWithRunLoop:(NSRunLoop*)runLoop
@@ -143,7 +142,7 @@
         NSInteger len = [inputStream read:buf maxLength:sizeof(buf)];
         if (len < 0) {
             NSError *error = WebSocketError(kWebSocketErrorTransport, @"Read Failed", nil);
-            NOTIFY([delegate webSocketTransport:self didFailedWithError:error]);
+            NOTIFY(errorHandler(error));
             return;
         }
         if (len > 0) {
@@ -160,7 +159,7 @@
         NSInteger written = [outputStream write:data.bytes maxLength:data.length];
         if (written == -1) {
             NSError *error = WebSocketError(kWebSocketErrorTransport, @"Write Failed", nil);
-            NOTIFY([delegate webSocketTransport:self didFailedWithError:error]);
+            NOTIFY(errorHandler(error));
             return;
         }
         [pendingData removeObjectAtIndex:0];
@@ -182,7 +181,7 @@
 {
     if (self.state == WebSocketTransportClosed) return;
     if (error) {
-        [self.delegate webSocketTransport:self didFailedWithError:error];
+        errorHandler(error);
     }
     [inputStream close];
     [outputStream close];

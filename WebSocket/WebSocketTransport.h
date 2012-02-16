@@ -10,22 +10,22 @@ typedef enum {
     WebSocketTransportClosed = 3,
 } WebSocketTransportState;
 
+@class WebSocketTransport;
 
+typedef void(^WSTransportListener)(WebSocketTransport *transport);
 typedef void(^WSTransportData)(NSData *data);
-
-
-@protocol WebSocketTransportDelegate;
+typedef void(^WSTransportError)(NSError *error);
 
 
 @interface WebSocketTransport : NSObject
-@property (unsafe_unretained) id<WebSocketTransportDelegate> delegate;
-@property (nonatomic, strong, readonly) NSString *host;
+@property (nonatomic, readonly, strong) NSString *host;
 @property (nonatomic, readonly) NSUInteger port;
 @property (nonatomic, readonly) BOOL secure;
 @property (nonatomic, readonly) WebSocketTransportState state;
 
-@property (nonatomic, copy, readonly) WSTransportData sender;
+@property (nonatomic, copy) WSTransportListener stateListener;
 @property (nonatomic, copy) WSTransportData receiver;
+@property (nonatomic, copy) WSTransportError errorHandler;
 
 
 - (id)initWithHost:(NSString*)host port:(NSUInteger)port secure:(BOOL)secure dispatchQueue:(dispatch_queue_t)dispatch;
@@ -34,13 +34,7 @@ typedef void(^WSTransportData)(NSData *data);
 - (void)openInRunLoop:(NSRunLoop*)runLoop;
 - (void)close;
 
-@end
-
-
-@protocol WebSocketTransportDelegate
-
-- (void)webSocketTransport:(WebSocketTransport*)transport didChangeState:(WebSocketTransportState)state;
-
-- (void)webSocketTransport:(WebSocketTransport*)transport didFailedWithError:(NSError*)error;
+- (void)send:(NSData*)data;
 
 @end
+

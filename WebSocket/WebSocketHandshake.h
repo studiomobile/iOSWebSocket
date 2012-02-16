@@ -4,27 +4,11 @@
 
 #import <Foundation/Foundation.h>
 
-@protocol WebSocketHandshakeDelegate;
+typedef void (^WSHandshakeError)(NSError *error);
+typedef void (^WSHandshakeData)(NSData *leftData);
 
+NSString* WebSocketHandshakeSecKey(void);
+NSString* WebSocketHandshakeAccept(NSString *secKey);
+NSData*   WebSocketHandshakeData(NSURLRequest *req, NSURL *origin, NSString *secKey, NSUInteger version);
 
-@interface WebSocketHandshake : NSObject
-@property (nonatomic, unsafe_unretained) id<WebSocketHandshakeDelegate> delegate;
-@property (nonatomic, strong, readonly) NSURLRequest *request;
-@property (nonatomic, strong, readonly) NSURL *origin;
-@property (nonatomic, readonly) NSUInteger version;
-@property (nonatomic, strong, readonly) NSData *handshakeData;
-
-- (id)initWithRequest:(NSURLRequest*)req origin:(NSURL*)origin version:(NSUInteger)version;
-
-- (void)acceptData:(NSData*)data;
-
-@end
-
-
-@protocol WebSocketHandshakeDelegate
-
-- (void)webSocketHandshake:(WebSocketHandshake*)handshake didFinishedWithDataLeft:(NSData*)data;
-
-- (void)webSocketHandshake:(WebSocketHandshake*)handshake didFailedWithError:(NSError*)error;
-
-@end
+id WebSocketHandshakeAcceptData(NSData *data, id state, NSString *accept, WSHandshakeError handler, WSHandshakeData completion);

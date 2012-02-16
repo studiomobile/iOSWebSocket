@@ -19,12 +19,13 @@ typedef void(^WSSocketNotifier)(WSSocketNotifierCallback callback);
 @property (nonatomic, copy) WSProtocolData receiver;
 @property (nonatomic, copy) WSProtocolError errorHandler;
 @property (nonatomic, copy) WSProtocolFrame frameReceiver;
-@property (nonatomic, strong) WebSocketFrame *partial;
+@property (nonatomic, copy) WSHandshakeData receiveHandshake;
+@property (nonatomic, copy) WSHandshakeData handshakeComplete;
+@property (nonatomic, strong) id handshake;
+@property (nonatomic, strong) NSString *accept;
+@property (nonatomic, strong) WebSocketFrame *frame;
 @property (nonatomic, strong, readonly) NSMutableData *cache;
 - (void)update:(WebSocketState)state;
-@end
-
-@interface WebSocket () <WebSocketTransportDelegate, WebSocketHandshakeDelegate>
 @end
 
 #define CALL(call) dispatch_async(work, ^{ call; })
@@ -33,8 +34,6 @@ typedef void(^WSSocketNotifier)(WSSocketNotifierCallback callback);
     WebSocketStateHolder *state;
     WebSocketTransport *transport;
     WSProtocolData sender;
-    WSProtocolData receiver;
-    WSProtocolError errorHandler;
     dispatch_queue_t work;
     dispatch_queue_t dispatch;
 }
@@ -53,29 +52,32 @@ typedef void(^WSSocketNotifier)(WSSocketNotifierCallback callback);
     if (self = [super init]) {
         request = _request;
         origin = _origin;
-        version = 13;
         secure = [self.class.secureSchemes containsObject:url.scheme];
         NSUInteger port = url.port ? [url.port unsignedIntegerValue] : secure ? 443 : 80;
+        NSUInteger _version = version = 13;
 
         work = dispatch_queue_create("WebSocket Work Queue", DISPATCH_QUEUE_SERIAL);
         if (!_dispatch) _dispatch = dispatch_get_main_queue();
         dispatch = _dispatch;
         dispatch_retain(dispatch);
 
-        WebSocketStateHolder *_state = state = [WebSocketStateHolder new];
-        WebSocketTransport *_transport = transport = [[WebSocketTransport alloc] initWithHost:url.host port:port secure:secure dispatchQueue:work];
-        transport.delegate = self;
-
         __unsafe_unretained WebSocket *me = self;
         __unsafe_unretained id<WebSocketDelegate> _delegate = __delegate;
+
+        WebSocketStateHolder *_state = state = [WebSocketStateHolder new];
+        WebSocketTransport *_transport = transport = [[WebSocketTransport alloc] initWithHost:url.host port:port secure:secure dispatchQueue:work];
+
         WSSocketNotifier _notify = state.notifier = ^(WSSocketNotifierCallback callback) {
             dispatch_async(_dispatch, ^{
                 callback(me, _delegate);
             });
         };
 
-        WSProtocolData _sender = sender = state.sender = transport.sender;
-        WSProtocolError _errorHandler = errorHandler = state.errorHandler = ^(NSError *error) {
+        WSProtocolData _sender = sender = state.sender = ^(NSData *data) {
+            [_transport send:data];
+        };
+
+        WSProtocolError _errorHandler = state.errorHandler = ^(NSError *error) {
             if (error) {
                 _notify(^(WebSocket *socket, id<WebSocketDelegate> delegate) {
                     [delegate webSocket:socket didFailedWithError:error];
@@ -117,8 +119,39 @@ typedef void(^WSSocketNotifier)(WSSocketNotifierCallback callback);
             }
         };
 
-        receiver = state.receiver = ^(NSData *data) {
-            _state.partial = WebSocketReceive(data, _state.partial, _state.cache, _frameReceiver, _errorHandler);
+        WSProtocolData _receiver = state.receiver = ^(NSData *data) {
+            _state.frame = WebSocketReceive(data, _state.frame, _state.cache, _frameReceiver, _errorHandler);
+        };
+
+        WSHandshakeData _handshakeComplete = state.handshakeComplete = ^(NSData *data) {
+            _transport.receiver = _receiver;
+            [_state update:WebSocketOpen];
+            if (data) {
+                _receiver(data);
+            }
+        };
+
+        WSHandshakeData _receiveHandshake = state.receiveHandshake = ^(NSData *data) {
+            _state.handshake = WebSocketHandshakeAcceptData(data, _state.handshake, _state.accept, _errorHandler, _handshakeComplete);
+        };
+
+        transport.errorHandler = _errorHandler;
+        transport.stateListener = ^(WebSocketTransport *tr) {
+            switch (tr.state) {
+                case WebSocketTransportConnecting:
+                    [_state update:WebSocketConnecting];
+                    break;
+                case WebSocketTransportOpen: {
+                    NSString *secKey = WebSocketHandshakeSecKey();
+                    _state.accept = WebSocketHandshakeAccept(secKey);
+                    tr.receiver = _receiveHandshake;
+                    _sender(WebSocketHandshakeData(_request, _origin, secKey, _version));
+                }   break;
+                case WebSocketTransportClosed:
+                    tr.receiver = nil;
+                    [_state update:WebSocketClosed];
+                    break;
+            }
         };
     }
     return self;
@@ -194,51 +227,8 @@ typedef void(^WSSocketNotifier)(WSSocketNotifierCallback callback);
     CALL(WebSocketSend(data, WebSocketPing, YES, sender));
 }
 
-#pragma mark WebSocketHandshakeDelegate
-
-- (void)webSocketHandshake:(WebSocketHandshake*)_handshake didFinishedWithDataLeft:(NSData*)data
-{
-    transport.receiver = receiver;
-    [state update:WebSocketOpen];
-    if (data) {
-        receiver(data);
-    }
-}
-
-- (void)webSocketHandshake:(WebSocketHandshake*)handshake didFailedWithError:(NSError*)error
-{
-    errorHandler(error);
-}
-
-#pragma mark WebSocketTransportDelegate
-
-- (void)webSocketTransport:(WebSocketTransport*)_transport didChangeState:(WebSocketTransportState)_state
-{
-    switch (_state) {
-        case WebSocketTransportConnecting:
-            [state update:WebSocketConnecting];
-            break;
-        case WebSocketTransportOpen: {
-            WebSocketHandshake * handshake = [[WebSocketHandshake alloc] initWithRequest:request origin:origin version:version];
-            handshake.delegate = self;
-            transport.receiver = ^(NSData *data) {
-                [handshake acceptData:data];
-            };
-            sender(handshake.handshakeData);
-        }   break;
-        case WebSocketTransportClosed:
-            transport.receiver = nil;
-            [state update:WebSocketClosed];
-            break;
-    }
-}
-
-- (void)webSocketTransport:(WebSocketTransport*)transport didFailedWithError:(NSError*)error
-{
-    errorHandler(error);
-}
-
 @end
+
 
 @implementation WebSocketStateHolder
 @synthesize state;
@@ -247,8 +237,12 @@ typedef void(^WSSocketNotifier)(WSSocketNotifierCallback callback);
 @synthesize receiver;
 @synthesize errorHandler;
 @synthesize frameReceiver;
+@synthesize receiveHandshake;
+@synthesize handshakeComplete;
+@synthesize handshake;
+@synthesize accept;
+@synthesize frame;
 @synthesize cache;
-@synthesize partial;
 
 - (id)init
 {
@@ -264,7 +258,7 @@ typedef void(^WSSocketNotifier)(WSSocketNotifierCallback callback);
     if (state == _state) return;
     state = _state;
     if (state == WebSocketClosed) {
-        partial = nil;
+        frame = nil;
         [cache setLength:0];
     }
     notifier(^(WebSocket *socket, id<WebSocketDelegate> delegate) {
@@ -273,6 +267,7 @@ typedef void(^WSSocketNotifier)(WSSocketNotifierCallback callback);
 }
 
 @end
+
 
 NSError* WebSocketError(NSInteger code, NSString *message, NSString *reason)
 {
