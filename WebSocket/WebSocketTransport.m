@@ -7,7 +7,6 @@
 
 #define DISPATCH(queue, call) if (dispatch_get_current_queue() == queue) { call; } else dispatch_async(queue, ^{ call; })
 #define CALL(call)   DISPATCH(work, call)
-#define HANDLE(call) DISPATCH(work, call)
 #define NOTIFY(call) DISPATCH(dispatch, call)
 
 @interface WebSocketTransport () <NSStreamDelegate>
@@ -190,23 +189,23 @@
     switch (eventCode) {
         case NSStreamEventOpenCompleted:
             if (stream == inputStream || stream == outputStream) {
-                HANDLE([self _updateState:WebSocketTransportOpen]);
+                CALL([self _updateState:WebSocketTransportOpen]);
             }
             break;
         case NSStreamEventHasBytesAvailable:
             if (stream == inputStream) {
-                HANDLE([self _read]);
+                CALL([self _read]);
             }
             break;
         case NSStreamEventHasSpaceAvailable:
             if (stream == outputStream) {
-                HANDLE([self _write]);
+                CALL([self _write]);
             }
             break;
         case NSStreamEventErrorOccurred:
         case NSStreamEventEndEncountered:
             if (stream == inputStream || stream == outputStream) {
-                HANDLE([self _closeWithError:stream.streamError]);
+                CALL([self _closeWithError:stream.streamError]);
             }
             break;
     }
