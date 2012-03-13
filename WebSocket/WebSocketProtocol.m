@@ -39,7 +39,6 @@ inline static uint32_t _mask(uint8_t *dst, NSUInteger len, uint8_t mask[4], uint
     return [NSString stringWithFormat:@"<%@:%d data:%d left:%d final:%d>", NSStringFromClass(self.class), opCode, self.data.length, (NSUInteger)left, final];
 }
 
-
 - (NSData*)appendData:(NSData*)_data
 {
     NSUInteger len = _data.length;
@@ -174,7 +173,7 @@ void WebSocketSend(NSData *data, WebSocketOpCode opCode, BOOL masked, WSProtocol
     uint8_t *hbuf = header.mutableBytes;
     uint8_t *hptr = hbuf;
 
-    *hptr++ = SignBitMask | (opCode % OpCodeMask);
+    *hptr++ = SignBitMask | (opCode & OpCodeMask);
 
     if (dataSize > UINT16_MAX) {
         *hptr++ = 127;
@@ -195,10 +194,9 @@ void WebSocketSend(NSData *data, WebSocketOpCode opCode, BOOL masked, WSProtocol
         hptr += sizeof(mask);
         memcpy(hptr, data.bytes, dataSize);
         _mask(hptr, dataSize, mask, 0);
-    }
-
-    sender(header);
-    if (!masked) {
+        sender(header);
+    } else {
+        sender(header);
         sender(data);
     }
 }
