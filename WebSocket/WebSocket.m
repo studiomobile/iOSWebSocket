@@ -13,10 +13,10 @@ typedef void(^WSSocketNotifierCallback)(WebSocket *socket, id<WebSocketDelegate>
 typedef void(^WSSocketNotifier)(WSSocketNotifierCallback callback);
 
 @interface WebSocketStateHolder : NSObject
+@property (nonatomic, unsafe_unretained) id<WebSocketDelegate> delegate;
 @property (nonatomic, readonly) WebSocketState state;
 @property (nonatomic, copy) WSSocketNotifier notifier;
 @property (nonatomic, copy) WSProtocolData sender;
-@property (nonatomic, copy) WSProtocolData receiver;
 @property (nonatomic, copy) WSProtocolError errorHandler;
 @property (nonatomic, copy) WSProtocolFrame frameReceiver;
 @property (nonatomic, copy) WSHandshakeData receiveHandshake;
@@ -45,7 +45,7 @@ typedef void(^WSSocketNotifier)(WSSocketNotifierCallback callback);
 + (NSArray*)supportedSchemes { return [NSArray arrayWithObjects:@"ws", @"wss", @"http", @"https", nil]; }
 + (NSArray*)secureSchemes { return [NSArray arrayWithObjects:@"wss", @"https", nil]; }
 
-- (id)initWithRequest:(NSURLRequest*)_request origin:(NSURL*)_origin delegate:(id<WebSocketDelegate>)__delegate dispatchQueue:(dispatch_queue_t)_dispatch
+- (id)initWithRequest:(NSURLRequest*)_request origin:(NSURL*)_origin dispatchQueue:(dispatch_queue_t)_dispatch
 {
     NSURL *url = _request.URL;
     if (![self.class.supportedSchemes containsObject:url.scheme]) return nil;
@@ -61,16 +61,17 @@ typedef void(^WSSocketNotifier)(WSSocketNotifierCallback callback);
         dispatch = _dispatch;
         dispatch_retain(dispatch);
 
-        __unsafe_unretained WebSocket *me = self;
-        __unsafe_unretained id<WebSocketDelegate> _delegate = __delegate;
-
         WebSocketStateHolder *_state = state = [WebSocketStateHolder new];
         WebSocketTransport *_transport = transport = [[WebSocketTransport alloc] initWithHost:url.host port:port secure:secure dispatchQueue:work];
 
+        __unsafe_unretained WebSocket *_me = self;
         WSSocketNotifier _notify = state.notifier = ^(WSSocketNotifierCallback callback) {
-            dispatch_async(_dispatch, ^{
-                callback(me, _delegate);
-            });
+            id<WebSocketDelegate> _delegate = _state.delegate;
+            if (_delegate) {
+                dispatch_async(_dispatch, ^{
+                    callback(_me, _delegate);
+                });
+            }
         };
 
         WSProtocolData _sender = sender = state.sender = ^(NSData *data) {
@@ -95,7 +96,7 @@ typedef void(^WSSocketNotifier)(WSSocketNotifierCallback callback);
                 }   break;
                 case WebSocketBinaryFrame: {
                     _notify(^(WebSocket *socket, id<WebSocketDelegate> delegate) {
-                        [delegate webSocket:me didReceiveData:frame.data];
+                        [delegate webSocket:socket didReceiveData:frame.data];
                     });
                 }   break;
                 case WebSocketPong: {
@@ -104,7 +105,7 @@ typedef void(^WSSocketNotifier)(WSSocketNotifierCallback callback);
                     if (data.length != sizeof(time)) return;
                     CFAbsoluteTime was = *(CFAbsoluteTime*)data.bytes;
                     _notify(^(WebSocket *socket, id<WebSocketDelegate> delegate) {
-                        [_delegate webSocket:me didReceivePongAfterDelay:time - was];
+                        [delegate webSocket:socket didReceivePongAfterDelay:time - was];
                     });
                 }   break;
                 case WebSocketPing:
@@ -119,20 +120,14 @@ typedef void(^WSSocketNotifier)(WSSocketNotifierCallback callback);
             }
         };
 
-        WSProtocolData _receiver = state.receiver = ^(NSData *data) {
-            _state.frame = WebSocketReceive(data, _state.frame, _state.cache, _frameReceiver, _errorHandler);
-        };
-
         WSHandshakeData _handshakeComplete = state.handshakeComplete = ^(NSData *data) {
-            _transport.receiver = _receiver;
+            WSProtocolData _receiver = _transport.receiver = ^(NSData *data) {
+                _state.frame = WebSocketReceive(data, _state.frame, _state.cache, _frameReceiver, _errorHandler);
+            };
             [_state update:WebSocketOpen];
             if (data) {
                 _receiver(data);
             }
-        };
-
-        WSHandshakeData _receiveHandshake = state.receiveHandshake = ^(NSData *data) {
-            _state.handshake = WebSocketHandshakeAcceptData(data, _state.handshake, _state.accept, _errorHandler, _handshakeComplete);
         };
 
         transport.errorHandler = _errorHandler;
@@ -144,8 +139,10 @@ typedef void(^WSSocketNotifier)(WSSocketNotifierCallback callback);
                 case WebSocketTransportOpen: {
                     NSString *secKey = WebSocketHandshakeSecKey();
                     _state.accept = WebSocketHandshakeAccept(secKey);
-                    tr.receiver = _receiveHandshake;
-                    _sender(WebSocketHandshakeData(_request, _origin, secKey, _version));
+                    tr.receiver = ^(NSData *data) {
+                        _state.handshake = WebSocketHandshakeAcceptData(data, _state.handshake, _state.accept, _errorHandler, _handshakeComplete);
+                    };
+                    [tr send:WebSocketHandshakeData(_request, _origin, secKey, _version)];
                 }   break;
                 case WebSocketTransportClosed:
                     tr.receiver = nil;
@@ -157,14 +154,14 @@ typedef void(^WSSocketNotifier)(WSSocketNotifierCallback callback);
     return self;
 }
 
-- (id)initWithRequest:(NSURLRequest*)_request delegate:(id<WebSocketDelegate>)_delegate
+- (id)initWithRequest:(NSURLRequest*)_request
 {
-    return [self initWithRequest:_request origin:nil delegate:_delegate dispatchQueue:nil];
+    return [self initWithRequest:_request origin:nil dispatchQueue:nil];
 }
 
-- (id)initWithRequest:(NSURLRequest*)_request origin:(NSURL*)_origin delegate:(id<WebSocketDelegate>)_delegate
+- (id)initWithRequest:(NSURLRequest*)_request origin:(NSURL*)_origin
 {
-    return [self initWithRequest:_request origin:_origin delegate:_delegate dispatchQueue:nil];
+    return [self initWithRequest:_request origin:_origin dispatchQueue:nil];
 }
 
 - (void)dealloc
@@ -177,6 +174,16 @@ typedef void(^WSSocketNotifier)(WSSocketNotifierCallback callback);
 }
 
 #pragma mark API
+
+- (id<WebSocketDelegate>)delegate
+{
+    return state.delegate;
+}
+
+- (void)setDelegate:(id<WebSocketDelegate>)delegate
+{
+    state.delegate = delegate;
+}
 
 - (WebSocketState)state
 {
@@ -234,10 +241,8 @@ typedef void(^WSSocketNotifier)(WSSocketNotifierCallback callback);
 @synthesize state;
 @synthesize notifier;
 @synthesize sender;
-@synthesize receiver;
 @synthesize errorHandler;
 @synthesize frameReceiver;
-@synthesize receiveHandshake;
 @synthesize handshakeComplete;
 @synthesize handshake;
 @synthesize accept;

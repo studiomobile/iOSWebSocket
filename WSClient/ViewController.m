@@ -56,7 +56,8 @@
 - (void)switchState
 {
     if (!socket) {
-        socket = [[WebSocket alloc] initWithRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:SERVER_URL]] delegate:self];
+        socket = [[WebSocket alloc] initWithRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:SERVER_URL]]];
+        socket.delegate = self;
     }
     if (socket.state == WebSocketOpen) {
         [socket close];

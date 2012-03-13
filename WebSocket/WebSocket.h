@@ -40,6 +40,7 @@ NSError* WebSocketError(NSInteger code, NSString *message, NSString *reason);
 @protocol WebSocketDelegate;
 
 @interface WebSocket : NSObject
+@property (nonatomic, unsafe_unretained) id<WebSocketDelegate> delegate;
 @property (nonatomic, strong, readonly) NSURLRequest *request;
 @property (nonatomic, strong, readonly) NSURL *origin;
 @property (nonatomic, readonly) WebSocketState state;
@@ -49,9 +50,9 @@ NSError* WebSocketError(NSInteger code, NSString *message, NSString *reason);
 + (NSArray*)supportedSchemes;
 + (NSArray*)secureSchemes;
 
-- (id)initWithRequest:(NSURLRequest*)request delegate:(id<WebSocketDelegate>)delegate;
-- (id)initWithRequest:(NSURLRequest*)request origin:(NSURL*)origin delegate:(id<WebSocketDelegate>)delegate;
-- (id)initWithRequest:(NSURLRequest*)request origin:(NSURL*)origin delegate:(id<WebSocketDelegate>)delegate dispatchQueue:(dispatch_queue_t)dispatch;
+- (id)initWithRequest:(NSURLRequest*)request;
+- (id)initWithRequest:(NSURLRequest*)request origin:(NSURL*)origin;
+- (id)initWithRequest:(NSURLRequest*)request origin:(NSURL*)origin dispatchQueue:(dispatch_queue_t)dispatch;
 
 - (void)open;
 - (void)openInRunLoop:(NSRunLoop*)runLoop;
