@@ -5,19 +5,10 @@
 #import "WebSocketTransport.h"
 #import "WebSocket.h"
 
-#ifdef WEBSOCKET_TRANSPORT_PRIVATE_QUEUE
-
-#define CALL(call)   dispatch_async(work, ^{ call; })
-#define HANDLE(call) dispatch_async(work, ^{ call; })
-#define NOTIFY(call) dispatch_async(dispatch, ^{ call; })
-
-#else
-
-#define CALL(call)   call
-#define HANDLE(call) dispatch_async(dispatch, ^{ call; })
-#define NOTIFY(call) call
-
-#endif
+#define DISPATCH(queue, call) if (dispatch_get_current_queue() == queue) { call; } else dispatch_async(queue, ^{ call; })
+#define CALL(call)   DISPATCH(work, call)
+#define HANDLE(call) DISPATCH(work, call)
+#define NOTIFY(call) DISPATCH(dispatch, call)
 
 @interface WebSocketTransport () <NSStreamDelegate>
 - (void)_openWithRunLoop:(NSRunLoop*)runLoop;
@@ -30,9 +21,7 @@
     NSOutputStream *outputStream;
     NSMutableArray *pendingData;
     dispatch_queue_t dispatch;
-#ifdef WEBSOCKET_TRANSPORT_PRIVATE_QUEUE
     dispatch_queue_t work;
-#endif
 }
 @synthesize host;
 @synthesize port;
@@ -53,6 +42,9 @@
         dispatch_retain(dispatch);
 #ifdef WEBSOCKET_TRANSPORT_PRIVATE_QUEUE
         work = dispatch_queue_create("WebSocketTransport Work Queue", DISPATCH_QUEUE_SERIAL);
+#else
+        work = dispatch_get_current_queue();
+        dispatch_retain(work);
 #endif
     }
     return self;
@@ -65,9 +57,7 @@
     outputStream.delegate = nil;
     [outputStream close];
     dispatch_release(dispatch);
-#ifdef WEBSOCKET_TRANSPORT_PRIVATE_QUEUE
     dispatch_release(work);
-#endif
 }
 
 #pragma mark API

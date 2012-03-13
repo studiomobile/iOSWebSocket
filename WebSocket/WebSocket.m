@@ -28,7 +28,8 @@ typedef void(^WSSocketNotifier)(WSSocketNotifierCallback callback);
 - (void)update:(WebSocketState)state;
 @end
 
-#define CALL(call) dispatch_async(work, ^{ call; })
+#define DISPATCH(queue, call) if (dispatch_get_current_queue() == queue) { call; } else dispatch_async(queue, ^{ call; })
+#define CALL(call) DISPATCH(work, call)
 
 @implementation WebSocket {
     WebSocketStateHolder *state;
@@ -56,8 +57,13 @@ typedef void(^WSSocketNotifier)(WSSocketNotifierCallback callback);
         NSUInteger port = url.port ? [url.port unsignedIntegerValue] : secure ? 443 : 80;
         NSUInteger _version = version = 13;
 
+#ifdef WEBSOCKET_PRIVATE_QUEUE
         work = dispatch_queue_create("WebSocket Work Queue", DISPATCH_QUEUE_SERIAL);
-        if (!_dispatch) _dispatch = dispatch_get_main_queue();
+#else
+        work = dispatch_get_current_queue();
+        dispatch_retain(work);
+#endif
+        if (!_dispatch) _dispatch = dispatch_get_current_queue();
         dispatch = _dispatch;
         dispatch_retain(dispatch);
 
@@ -68,9 +74,7 @@ typedef void(^WSSocketNotifier)(WSSocketNotifierCallback callback);
         WSSocketNotifier _notify = state.notifier = ^(WSSocketNotifierCallback callback) {
             id<WebSocketDelegate> _delegate = _state.delegate;
             if (_delegate) {
-                dispatch_async(_dispatch, ^{
-                    callback(_me, _delegate);
-                });
+                DISPATCH(_dispatch, callback(_me, _delegate));
             }
         };
 
@@ -168,7 +172,9 @@ typedef void(^WSSocketNotifier)(WSSocketNotifierCallback callback);
 {
     state.notifier = ^(WSSocketNotifierCallback _) {};
     [transport close];
-    dispatch_sync(work, ^{}); // wait for completion
+    if (dispatch_get_current_queue() != work) {
+        dispatch_sync(work, ^{}); // wait for completion
+    }
     dispatch_release(work);
     dispatch_release(dispatch);
 }
