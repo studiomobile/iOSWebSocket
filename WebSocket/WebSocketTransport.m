@@ -79,7 +79,7 @@
 
 - (void)send:(NSData*)data
 {
-    CALL([self _writeData:[data copy]]);
+    CALL([self _writeData:data]);
 }
 
 #pragma mark Internals
