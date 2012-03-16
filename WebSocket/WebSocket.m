@@ -19,7 +19,6 @@ typedef void(^WSSocketNotifier)(WSSocketNotifierCallback callback);
 @property (nonatomic, copy) WSProtocolData sender;
 @property (nonatomic, copy) WSProtocolError errorHandler;
 @property (nonatomic, copy) WSProtocolFrame frameReceiver;
-@property (nonatomic, copy) WSHandshakeData receiveHandshake;
 @property (nonatomic, copy) WSHandshakeData handshakeComplete;
 @property (nonatomic, strong) id handshake;
 @property (nonatomic, strong) NSString *accept;
@@ -244,6 +243,7 @@ typedef void(^WSSocketNotifier)(WSSocketNotifierCallback callback);
 
 
 @implementation WebSocketStateHolder
+@synthesize delegate=_delegate;
 @synthesize state;
 @synthesize notifier;
 @synthesize sender;
