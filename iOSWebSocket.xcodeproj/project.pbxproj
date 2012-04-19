@@ -19,13 +19,13 @@
 		B416A10614E98F5000372771 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B416A10514E98F5000372771 /* CFNetwork.framework */; };
 		B4F7139D14EC25280009A8D2 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AACBBE490F95108600F1A2B1 /* Foundation.framework */; };
 		B4F713A314EC25280009A8D2 /* WebSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = B4F713A214EC25280009A8D2 /* WebSocket.m */; };
-		B4F713AF14EC256B0009A8D2 /* NSData+Base64.h in Headers */ = {isa = PBXBuildFile; fileRef = B4F713A714EC256B0009A8D2 /* NSData+Base64.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		B4F713AF14EC256B0009A8D2 /* NSData+Base64.h in Headers */ = {isa = PBXBuildFile; fileRef = B4F713A714EC256B0009A8D2 /* NSData+Base64.h */; settings = {ATTRIBUTES = (); }; };
 		B4F713B014EC256B0009A8D2 /* NSData+Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = B4F713A814EC256B0009A8D2 /* NSData+Base64.m */; };
 		B4F713B214EC256B0009A8D2 /* WebSocketHandshake.m in Sources */ = {isa = PBXBuildFile; fileRef = B4F713AA14EC256B0009A8D2 /* WebSocketHandshake.m */; };
 		B4F713B414EC256B0009A8D2 /* WebSocketProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = B4F713AC14EC256B0009A8D2 /* WebSocketProtocol.m */; };
 		B4F713B614EC256B0009A8D2 /* WebSocketTransport.m in Sources */ = {isa = PBXBuildFile; fileRef = B4F713AE14EC256B0009A8D2 /* WebSocketTransport.m */; };
 		B4F713B714EC25D50009A8D2 /* libWebSocket.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B4F7139C14EC25280009A8D2 /* libWebSocket.a */; };
-		B4F713B814EC25FA0009A8D2 /* WebSocket.h in Headers */ = {isa = PBXBuildFile; fileRef = B4F713A114EC25280009A8D2 /* WebSocket.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		B4F713B814EC25FA0009A8D2 /* WebSocket.h in Headers */ = {isa = PBXBuildFile; fileRef = B4F713A114EC25280009A8D2 /* WebSocket.h */; settings = {ATTRIBUTES = (); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -320,6 +320,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				OTHER_LDFLAGS = "-ObjC";
 				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
 			};
 			name = Debug;
 		};
@@ -332,6 +333,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				OTHER_LDFLAGS = "-ObjC";
 				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
 			};
 			name = Release;
 		};
@@ -401,7 +403,6 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
 			};
 			name = Debug;
 		};
@@ -419,7 +420,6 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -452,6 +452,7 @@
 				B4F713A614EC25280009A8D2 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
