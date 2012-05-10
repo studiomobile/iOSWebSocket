@@ -12,8 +12,12 @@
 
 NSString* WebSocketHandshakeSecKey(void)
 {
+#if TARGET_OS_IPHONE
     NSMutableData *key = [[NSMutableData alloc] initWithLength:SEC_KEY_SIZE];
     SecRandomCopyBytes(kSecRandomDefault, key.length, key.mutableBytes);
+#else
+    NSData *key = [[NSFileHandle fileHandleForReadingAtPath:@"/dev/random"] readDataOfLength:SEC_KEY_SIZE];
+#endif
     return [key base64EncodedString];
 }
 
@@ -21,7 +25,7 @@ NSString* WebSocketHandshakeAccept(NSString *secKey)
 {
     const char *bytes = [[secKey stringByAppendingString:WEB_SOCKET_GUID] cStringUsingEncoding:NSASCIIStringEncoding];
     uint8_t digest[CC_SHA1_DIGEST_LENGTH];
-    CC_SHA1(bytes, strlen(bytes), digest);
+    CC_SHA1(bytes, (CC_LONG)strlen(bytes), digest);
     return [[NSData dataWithBytesNoCopy:digest length:sizeof(digest) freeWhenDone:NO] base64EncodedString];
 }
 
@@ -37,7 +41,7 @@ NSData* WebSocketHandshakeData(NSURLRequest *req, NSURL *origin, NSString *secKe
     CFHTTPMessageSetHeaderFieldValue(handshake, CFSTR("Upgrade"), CFSTR("websocket"));
     CFHTTPMessageSetHeaderFieldValue(handshake, CFSTR("Connection"), CFSTR("Upgrade"));
     CFHTTPMessageSetHeaderFieldValue(handshake, CFSTR("Sec-WebSocket-Key"), (__bridge CFStringRef)secKey);
-    CFHTTPMessageSetHeaderFieldValue(handshake, CFSTR("Sec-WebSocket-Version"), (__bridge CFStringRef)[NSString stringWithFormat:@"%d", version]);
+    CFHTTPMessageSetHeaderFieldValue(handshake, CFSTR("Sec-WebSocket-Version"), (__bridge CFStringRef)[NSString stringWithFormat:@"%d", (uint32_t)version]);
     if (origin) {
         CFHTTPMessageSetHeaderFieldValue(handshake, CFSTR("Origin"), (__bridge CFStringRef)origin.absoluteString);
     }

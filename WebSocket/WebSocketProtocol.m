@@ -36,7 +36,7 @@ inline static uint32_t _mask(uint8_t *dst, NSUInteger len, uint8_t mask[4], uint
 
 - (NSString*)description
 {
-    return [NSString stringWithFormat:@"<%@:%d data:%d left:%d final:%d>", NSStringFromClass(self.class), opCode, self.data.length, (NSUInteger)left, final];
+    return [NSString stringWithFormat:@"<%@:%d data:%d left:%d final:%d>", NSStringFromClass(self.class), opCode, (uint32_t)self.data.length, (uint32_t)left, final];
 }
 
 - (NSData*)appendData:(NSData*)_data
@@ -189,7 +189,12 @@ void WebSocketSend(NSData *data, WebSocketOpCode opCode, BOOL masked, WSProtocol
 
     if (masked) {
         hbuf[1] |= SignBitMask;
+#if TARGET_OS_IPHONE
         SecRandomCopyBytes(kSecRandomDefault, sizeof(mask), (uint8_t*)&mask);
+#else
+        NSData *random = [[NSFileHandle fileHandleForReadingAtPath:@"/dev/random"] readDataOfLength:sizeof(mask)];
+        memcpy(&mask, random.bytes, sizeof(mask));
+#endif
         memcpy(hptr, mask, sizeof(mask));
         hptr += sizeof(mask);
         memcpy(hptr, data.bytes, dataSize);

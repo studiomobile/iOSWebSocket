@@ -9,6 +9,13 @@
 #define CALL(call)   DISPATCH(work, call)
 #define NOTIFY(call) DISPATCH(dispatch, call)
 
+#if TARGET_OS_MAC
+#undef dispatch_retain
+#undef dispatch_release
+#define dispatch_retain(q)
+#define dispatch_release(q)
+#endif
+
 @interface WebSocketTransport () <NSStreamDelegate>
 - (void)_openWithRunLoop:(NSRunLoop*)runLoop;
 - (void)_writeData:(NSData*)data;
@@ -97,7 +104,7 @@
 
     CFReadStreamRef readStream = NULL;
     CFWriteStreamRef writeStream = NULL;
-    CFStreamCreatePairWithSocketToHost(NULL, (__bridge CFStringRef)host, port, &readStream, &writeStream);
+    CFStreamCreatePairWithSocketToHost(NULL, (__bridge CFStringRef)host, (UInt32)port, &readStream, &writeStream);
 
     if (secure) {
         CFReadStreamSetProperty(readStream, kCFStreamPropertySocketSecurityLevel, kCFStreamSocketSecurityLevelNegotiatedSSL);
@@ -207,6 +214,8 @@
             if (stream == inputStream || stream == outputStream) {
                 CALL([self _closeWithError:stream.streamError]);
             }
+            break;
+        default:
             break;
     }
 }

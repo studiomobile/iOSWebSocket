@@ -12,6 +12,13 @@ NSString *kWebSocketErrorDomain = @"WebSocketErrorDomain";
 typedef void(^WSSocketNotifierCallback)(WebSocket *socket, id<WebSocketDelegate> delegate);
 typedef void(^WSSocketNotifier)(WSSocketNotifierCallback callback);
 
+#if TARGET_OS_MAC
+#undef dispatch_retain
+#undef dispatch_release
+#define dispatch_retain(q)
+#define dispatch_release(q)
+#endif
+
 @interface WebSocketStateHolder : NSObject
 @property (nonatomic, unsafe_unretained) id<WebSocketDelegate> delegate;
 @property (nonatomic, readonly) WebSocketState state;

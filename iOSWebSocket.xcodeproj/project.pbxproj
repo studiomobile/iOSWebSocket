@@ -17,6 +17,14 @@
 		B416A0FB14E98C8B00372771 /* ViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B416A0F914E98C8B00372771 /* ViewController.xib */; };
 		B416A10414E98F3B00372771 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B416A10314E98F3B00372771 /* Security.framework */; };
 		B416A10614E98F5000372771 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B416A10514E98F5000372771 /* CFNetwork.framework */; };
+		B4E4E011155C3AE900D1E750 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B4E4E010155C3AE900D1E750 /* Cocoa.framework */; };
+		B4E4E024155C3B1500D1E750 /* WebSocket.h in Headers */ = {isa = PBXBuildFile; fileRef = B4F713A114EC25280009A8D2 /* WebSocket.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		B4E4E025155C3B1800D1E750 /* NSData+Base64.h in Headers */ = {isa = PBXBuildFile; fileRef = B4F713A714EC256B0009A8D2 /* NSData+Base64.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		B4E4E026155C3B2200D1E750 /* WebSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = B4F713A214EC25280009A8D2 /* WebSocket.m */; };
+		B4E4E027155C3B2200D1E750 /* WebSocketHandshake.m in Sources */ = {isa = PBXBuildFile; fileRef = B4F713AA14EC256B0009A8D2 /* WebSocketHandshake.m */; };
+		B4E4E028155C3B2200D1E750 /* WebSocketProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = B4F713AC14EC256B0009A8D2 /* WebSocketProtocol.m */; };
+		B4E4E029155C3B2200D1E750 /* WebSocketTransport.m in Sources */ = {isa = PBXBuildFile; fileRef = B4F713AE14EC256B0009A8D2 /* WebSocketTransport.m */; };
+		B4E4E02A155C3B2200D1E750 /* NSData+Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = B4F713A814EC256B0009A8D2 /* NSData+Base64.m */; };
 		B4F7139D14EC25280009A8D2 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AACBBE490F95108600F1A2B1 /* Foundation.framework */; };
 		B4F713A314EC25280009A8D2 /* WebSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = B4F713A214EC25280009A8D2 /* WebSocket.m */; };
 		B4F713AF14EC256B0009A8D2 /* NSData+Base64.h in Headers */ = {isa = PBXBuildFile; fileRef = B4F713A714EC256B0009A8D2 /* NSData+Base64.h */; settings = {ATTRIBUTES = (); }; };
@@ -54,6 +62,11 @@
 		B416A0FA14E98C8B00372771 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/ViewController.xib; sourceTree = "<group>"; };
 		B416A10314E98F3B00372771 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		B416A10514E98F5000372771 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
+		B4E4E00F155C3AE900D1E750 /* MacWebSocket.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = MacWebSocket.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		B4E4E010155C3AE900D1E750 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = Library/Frameworks/Cocoa.framework; sourceTree = DEVELOPER_DIR; };
+		B4E4E013155C3AE900D1E750 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
+		B4E4E014155C3AE900D1E750 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		B4E4E015155C3AE900D1E750 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		B4F7139C14EC25280009A8D2 /* libWebSocket.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libWebSocket.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		B4F713A114EC25280009A8D2 /* WebSocket.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WebSocket.h; sourceTree = "<group>"; };
 		B4F713A214EC25280009A8D2 /* WebSocket.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WebSocket.m; sourceTree = "<group>"; };
@@ -81,6 +94,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		B4E4E00B155C3AE900D1E750 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B4E4E011155C3AE900D1E750 /* Cocoa.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		B4F7139914EC25280009A8D2 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -97,6 +118,7 @@
 			children = (
 				B416A0E314E98C8A00372771 /* WSClient.app */,
 				B4F7139C14EC25280009A8D2 /* libWebSocket.a */,
+				B4E4E00F155C3AE900D1E750 /* MacWebSocket.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -120,6 +142,8 @@
 				AACBBE490F95108600F1A2B1 /* Foundation.framework */,
 				B416A0E514E98C8B00372771 /* UIKit.framework */,
 				B416A0E814E98C8B00372771 /* CoreGraphics.framework */,
+				B4E4E010155C3AE900D1E750 /* Cocoa.framework */,
+				B4E4E012155C3AE900D1E750 /* Other Frameworks */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -148,6 +172,16 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		B4E4E012155C3AE900D1E750 /* Other Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				B4E4E013155C3AE900D1E750 /* AppKit.framework */,
+				B4E4E014155C3AE900D1E750 /* CoreData.framework */,
+				B4E4E015155C3AE900D1E750 /* Foundation.framework */,
+			);
+			name = "Other Frameworks";
+			sourceTree = "<group>";
+		};
 		B4F7139E14EC25280009A8D2 /* WebSocket */ = {
 			isa = PBXGroup;
 			children = (
@@ -168,6 +202,15 @@
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
+		B4E4E00C155C3AE900D1E750 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B4E4E024155C3B1500D1E750 /* WebSocket.h in Headers */,
+				B4E4E025155C3B1800D1E750 /* NSData+Base64.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		B4F7139A14EC25280009A8D2 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -197,6 +240,24 @@
 			productName = WSClient;
 			productReference = B416A0E314E98C8A00372771 /* WSClient.app */;
 			productType = "com.apple.product-type.application";
+		};
+		B4E4E00E155C3AE900D1E750 /* MacWebSocket */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B4E4E022155C3AE900D1E750 /* Build configuration list for PBXNativeTarget "MacWebSocket" */;
+			buildPhases = (
+				B4E4E00A155C3AE900D1E750 /* Sources */,
+				B4E4E00B155C3AE900D1E750 /* Frameworks */,
+				B4E4E00C155C3AE900D1E750 /* Headers */,
+				B4E4E00D155C3AE900D1E750 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = MacWebSocket;
+			productName = MacWebSocket;
+			productReference = B4E4E00F155C3AE900D1E750 /* MacWebSocket.framework */;
+			productType = "com.apple.product-type.framework";
 		};
 		B4F7139B14EC25280009A8D2 /* WebSocket */ = {
 			isa = PBXNativeTarget;
@@ -241,6 +302,7 @@
 			targets = (
 				B4F7139B14EC25280009A8D2 /* WebSocket */,
 				B416A0E214E98C8A00372771 /* WSClient */,
+				B4E4E00E155C3AE900D1E750 /* MacWebSocket */,
 			);
 		};
 /* End PBXProject section */
@@ -255,6 +317,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		B4E4E00D155C3AE900D1E750 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -265,6 +334,18 @@
 				B416A0F114E98C8B00372771 /* main.m in Sources */,
 				B416A0F514E98C8B00372771 /* AppDelegate.m in Sources */,
 				B416A0F814E98C8B00372771 /* ViewController.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B4E4E00A155C3AE900D1E750 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B4E4E026155C3B2200D1E750 /* WebSocket.m in Sources */,
+				B4E4E027155C3B2200D1E750 /* WebSocketHandshake.m in Sources */,
+				B4E4E028155C3B2200D1E750 /* WebSocketProtocol.m in Sources */,
+				B4E4E029155C3B2200D1E750 /* WebSocketTransport.m in Sources */,
+				B4E4E02A155C3B2200D1E750 /* NSData+Base64.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -383,6 +464,70 @@
 			};
 			name = Release;
 		};
+		B4E4E020155C3AE900D1E750 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SYSTEM_APPS_DIR)/Xcode.app/Contents/Developer/Library/Frameworks\"",
+				);
+				FRAMEWORK_VERSION = A;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				WRAPPER_EXTENSION = framework;
+			};
+			name = Debug;
+		};
+		B4E4E021155C3AE900D1E750 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SYSTEM_APPS_DIR)/Xcode.app/Contents/Developer/Library/Frameworks\"",
+				);
+				FRAMEWORK_VERSION = A;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				WRAPPER_EXTENSION = framework;
+			};
+			name = Release;
+		};
 		B4F713A514EC25280009A8D2 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -444,6 +589,14 @@
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
+		};
+		B4E4E022155C3AE900D1E750 /* Build configuration list for PBXNativeTarget "MacWebSocket" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B4E4E020155C3AE900D1E750 /* Debug */,
+				B4E4E021155C3AE900D1E750 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
 		};
 		B4F713A414EC25280009A8D2 /* Build configuration list for PBXNativeTarget "WebSocket" */ = {
 			isa = XCConfigurationList;
