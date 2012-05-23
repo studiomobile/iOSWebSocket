@@ -69,7 +69,16 @@ id WebSocketHandshakeAcceptData(NSData *data, id state, NSString *accept, WSHand
         return nil;
     }
     NSDictionary *headers = CFBridgingRelease(CFHTTPMessageCopyAllHeaderFields(resp));
-    BOOL accepted = [accept isEqualToString:[headers objectForKey:@"Sec-WebSocket-Accept"]];
+    NSString *acceptHeader = [headers objectForKey:@"Sec-WebSocket-Accept"];
+    if (!acceptHeader) {
+        for (NSString *h in headers.allKeys) {
+            if ([[h lowercaseString] isEqualToString:@"sec-websocket-accept"]) {
+                acceptHeader = [headers objectForKey:h];
+                break;
+            }
+        }
+    }
+    BOOL accepted = [accept isEqualToString:acceptHeader];
     if (!accepted) {
         handler(WebSocketError(kWebSocketErrorHandshake, @"Bad Sec-WebSocket-Accept header", nil));
         return nil;
