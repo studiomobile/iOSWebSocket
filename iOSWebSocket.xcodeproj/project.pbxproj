@@ -134,7 +134,6 @@
 				AACBBE490F95108600F1A2B1 /* Foundation.framework */,
 				B416A0E514E98C8B00372771 /* UIKit.framework */,
 				B416A0E814E98C8B00372771 /* CoreGraphics.framework */,
-				B4E4E010155C3AE900D1E750 /* Cocoa.framework */,
 				B4E4E012155C3AE900D1E750 /* Other Frameworks */,
 			);
 			name = Frameworks;
@@ -167,9 +166,6 @@
 		B4E4E012155C3AE900D1E750 /* Other Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				B4E4E013155C3AE900D1E750 /* AppKit.framework */,
-				B4E4E014155C3AE900D1E750 /* CoreData.framework */,
-				B4E4E015155C3AE900D1E750 /* Foundation.framework */,
 			);
 			name = "Other Frameworks";
 			sourceTree = "<group>";
@@ -194,15 +190,6 @@
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
-		B4E4E00C155C3AE900D1E750 /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				B4E4E024155C3B1500D1E750 /* WebSocket.h in Headers */,
-				B4E4E025155C3B1800D1E750 /* NSData+Base64.h in Headers */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		B4F7139A14EC25280009A8D2 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -239,7 +226,6 @@
 			buildPhases = (
 				B48FA181155E653900A8597D /* Sources */,
 				B48FA182155E653900A8597D /* Frameworks */,
-				B48FA183155E653900A8597D /* Headers */,
 			);
 			buildRules = (
 			);
@@ -273,7 +259,7 @@
 		0867D690FE84028FC02AAC07 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0420;
+				LastUpgradeCheck = 0450;
 			};
 			buildConfigurationList = 1DEB922208733DC00010E9CD /* Build configuration list for PBXProject "iOSWebSocket" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -379,6 +365,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				COMBINE_HIDPI_IMAGES = YES;
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
@@ -393,6 +380,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				COMBINE_HIDPI_IMAGES = YES;
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
@@ -475,7 +463,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx10.7;
+				SDKROOT = macosx;
 			};
 			name = Debug;
 		};
@@ -500,7 +488,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx10.7;
+				SDKROOT = macosx;
 			};
 			name = Release;
 		};

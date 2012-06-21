@@ -7,10 +7,10 @@
   },
   "main": "server",
   "engines": {
-    "node": "~0.6.10"
+    "node": ">= 0.6.x"
   },
   "dependencies": {
-    "ws": ">= 0.4"
+    "ws": "latest"
   },
   "devDependencies": {},
   "optionalDependencies": {}
