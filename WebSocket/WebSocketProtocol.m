@@ -153,7 +153,7 @@ WebSocketFrame* WebSocketReceive(NSData *data, WebSocketFrame *partial, NSMutabl
 }
 
 
-void WebSocketSend(NSData *data, WebSocketOpCode opCode, BOOL masked, WSProtocolData sender)
+NSMutableArray* WebSocketPacket(NSData *data, WebSocketOpCode opCode, BOOL masked)
 {
     NSUInteger headerSize = 2;
     NSUInteger dataSize = data.length;
@@ -199,10 +199,9 @@ void WebSocketSend(NSData *data, WebSocketOpCode opCode, BOOL masked, WSProtocol
         hptr += sizeof(mask);
         memcpy(hptr, data.bytes, dataSize);
         _mask(hptr, dataSize, mask, 0);
-        sender(header);
+        return [NSMutableArray arrayWithObject:header];
     } else {
-        sender(header);
-        sender(data);
+        return [NSMutableArray arrayWithObjects:header, data, nil];
     }
 }
 

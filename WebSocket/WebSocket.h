@@ -50,11 +50,8 @@ NSError* WebSocketError(NSInteger code, NSString *message, NSString *reason);
 + (NSArray*)supportedSchemes;
 + (NSArray*)secureSchemes;
 
-- (id)initWithRequest:(NSURLRequest*)request;
 - (id)initWithRequest:(NSURLRequest*)request origin:(NSURL*)origin;
-- (id)initWithRequest:(NSURLRequest*)request origin:(NSURL*)origin dispatchQueue:(dispatch_queue_t)dispatch;
 
-- (void)open;
 - (void)openInRunLoop:(NSRunLoop*)runLoop;
 - (void)close;
 - (void)closeWithMessage:(NSString*)message code:(WebSocketCloseCode)code;

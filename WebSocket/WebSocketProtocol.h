@@ -20,11 +20,10 @@ typedef enum  {
 @end
 
 
-typedef void(^WSProtocolData)(NSData *data);
 typedef void(^WSProtocolFrame)(WebSocketFrame *frame);
 typedef void(^WSProtocolError)(NSError *error);
 
 
-void WebSocketSend(NSData *data, WebSocketOpCode opCode, BOOL masked, WSProtocolData sender);
+NSMutableArray* WebSocketPacket(NSData *data, WebSocketOpCode opCode, BOOL masked);
 
 WebSocketFrame* WebSocketReceive(NSData *data, WebSocketFrame *partial, NSMutableData *cache, WSProtocolFrame receiver, WSProtocolError handler);

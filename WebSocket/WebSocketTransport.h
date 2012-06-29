@@ -28,13 +28,12 @@ typedef void(^WSTransportError)(NSError *error);
 @property (nonatomic, copy) WSTransportError errorHandler;
 
 
-- (id)initWithHost:(NSString*)host port:(NSUInteger)port secure:(BOOL)secure dispatchQueue:(dispatch_queue_t)dispatch;
+- (id)initWithHost:(NSString*)host port:(NSUInteger)port secure:(BOOL)secure;
 
-- (void)open;
 - (void)openInRunLoop:(NSRunLoop*)runLoop;
 - (void)close;
 
-- (void)send:(NSData*)data;
+- (void)send:(NSArray*)datas;
 
 @end
 
