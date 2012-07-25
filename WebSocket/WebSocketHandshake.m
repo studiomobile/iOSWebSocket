@@ -83,7 +83,7 @@ id WebSocketHandshakeAcceptData(NSData *data, id state, NSString *accept, WSHand
         handler(WebSocketError(kWebSocketErrorHandshake, @"Bad Sec-WebSocket-Accept header", nil));
         return nil;
     }
-    //TODO: check data left
-    completion(nil);
+    NSData *left = CFBridgingRelease(CFHTTPMessageCopyBody(resp));
+    completion(left);
     return nil;
 }
