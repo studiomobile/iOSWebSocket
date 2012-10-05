@@ -70,4 +70,5 @@ NSError* WebSocketError(NSInteger code, NSString *message, NSString *reason);
 - (void)webSocket:(WebSocket*)webSocket didReceiveStringData:(NSData*)data;
 - (void)webSocket:(WebSocket*)webSocket didReceivePongAfterDelay:(CFTimeInterval)delay;
 - (void)webSocket:(WebSocket*)webSocket didFailedWithError:(NSError*)error;
+- (void)webSocket:(WebSocket*)webSocket didCloseWithCode:(WebSocketCloseCode)code data:(NSData *)data;
 @end

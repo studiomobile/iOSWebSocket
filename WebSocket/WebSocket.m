@@ -94,10 +94,22 @@ typedef void(^WSSocketNotifier)(WSSocketNotifierCallback callback);
                     NSArray *packet = WebSocketPacket(frame.data, WebSocketPong, YES);
                     [_transport send:packet];
                 }   break;
-                case WebSocketConnectionClose:
-                    //TODO: check close code
+                case WebSocketConnectionClose: {
+                    NSData *data = frame.data;
+                    NSData *subdata = nil;
+                    uint16_t _code;
+                    if (data.length >= sizeof(_code)) {
+                        [data getBytes:&_code length:sizeof(_code)];
+                        WebSocketCloseCode code = (WebSocketCloseCode) OSSwapBigToHostInt16(_code);
+                        if (data.length > sizeof(_code)) {
+                            subdata = [data subdataWithRange:NSMakeRange(sizeof(_code), data.length - sizeof(_code))];
+                        }
+                        _notify(^(WebSocket *socket, id<WebSocketDelegate> delegate) {
+                            [delegate webSocket:socket didCloseWithCode:code data:subdata];
+                        });
+                    }
                     _errorHandler(nil);
-                    break;
+                }   break;
                 default:
                     break;
             }
