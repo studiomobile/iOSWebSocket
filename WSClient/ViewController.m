@@ -126,6 +126,10 @@
     [[[UIAlertView alloc] initWithTitle:@"Error" message:error.localizedDescription delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
 }
 
+- (void)webSocket:(WebSocket *)webSocket didCloseWithCode:(WebSocketCloseCode)code data:(NSData *)data
+{
+}
+
 #pragma mark - Keyboard handling
 
 - (void)animateFromKeyboardNotification:(NSNotification*)n
