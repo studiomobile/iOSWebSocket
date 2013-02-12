@@ -84,7 +84,7 @@ error:
 
 - (NSString *)base64EncodedString
 {
-    const uint8_t const *input = (uint8_t*)self.bytes;
+    const uint8_t *const input = (uint8_t*)self.bytes;
     const NSUInteger length = self.length;
 	if (!length) return @"";
     
