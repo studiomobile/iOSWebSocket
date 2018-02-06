@@ -190,7 +190,8 @@ NSMutableArray* WebSocketPacket(NSData *data, WebSocketOpCode opCode, BOOL maske
     if (masked) {
         hbuf[1] |= SignBitMask;
 #if TARGET_OS_IPHONE
-        SecRandomCopyBytes(kSecRandomDefault, sizeof(mask), (uint8_t*)&mask);
+        int statusCode = SecRandomCopyBytes(kSecRandomDefault, sizeof(mask), (uint8_t *) &mask);
+        NSCAssert(statusCode == 0, @"Unable to generate a mask: %d", statusCode);
 #else
         NSData *random = [[NSFileHandle fileHandleForReadingAtPath:@"/dev/random"] readDataOfLength:sizeof(mask)];
         memcpy(&mask, random.bytes, sizeof(mask));

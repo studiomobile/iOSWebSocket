@@ -14,7 +14,8 @@ NSString* WebSocketHandshakeSecKey(void)
 {
 #if TARGET_OS_IPHONE
     NSMutableData *key = [[NSMutableData alloc] initWithLength:SEC_KEY_SIZE];
-    SecRandomCopyBytes(kSecRandomDefault, key.length, key.mutableBytes);
+    int statusCode = SecRandomCopyBytes(kSecRandomDefault, key.length, key.mutableBytes);
+    NSCAssert(statusCode == 0, @"Unable to generate a handshake key: %d", statusCode);
 #else
     NSData *key = [[NSFileHandle fileHandleForReadingAtPath:@"/dev/random"] readDataOfLength:SEC_KEY_SIZE];
 #endif
