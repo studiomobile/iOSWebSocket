@@ -58,7 +58,7 @@
         CFWriteStreamSetProperty(writeStream, kCFStreamPropertySocketSecurityLevel, kCFStreamSocketSecurityLevelNegotiatedSSL);
 #if TARGET_IPHONE_SIMULATOR
         NSLog(@"WebSocketTransport: In debug mode. Allowing connection to any root cert");
-        NSDictionary *sslOpt = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES] forKey:(__bridge NSString*)kCFStreamSSLAllowsAnyRoot];
+        NSDictionary *sslOpt = @{(__bridge NSString *) kCFStreamSSLValidatesCertificateChain: @NO};
         CFReadStreamSetProperty(readStream, kCFStreamPropertySSLSettings, (__bridge CFDictionaryRef)sslOpt);
         CFWriteStreamSetProperty(writeStream, kCFStreamPropertySSLSettings, (__bridge CFDictionaryRef)sslOpt);
 #endif
