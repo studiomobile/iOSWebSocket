@@ -4,14 +4,14 @@
 
 #import <Foundation/Foundation.h>
 
-typedef enum {
+typedef NS_ENUM(NSUInteger, WebSocketState) {
     WebSocketClosed = 0,
     WebSocketClosing = 1,
     WebSocketConnecting = 2,
     WebSocketOpen = 3,
-} WebSocketState;
+};
 
-typedef enum {
+typedef NS_ENUM(NSUInteger, WebSocketCloseCode) {
     WebSocketCloseNormal     = 1000,
     WebSocketCloseAway       = 1001,
     WebSocketCloseError      = 1002,
@@ -24,7 +24,7 @@ typedef enum {
     WebSocketCloseExtensions = 1010,
     WebSocketCloseUnexpected = 1011,
     WebSocketCloseTLS        = 1015,
-} WebSocketCloseCode;
+};
 
 
 extern NSString *kWebSocketErrorDomain;
